@@ -1,0 +1,140 @@
+/**
+ *  Influxdb shipper
+ *
+ *  Copyright 2015 Prune Prune@lecentre.net
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License. You may obtain a copy of the License at:
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+ *  on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
+ *  for the specific language governing permissions and limitations under the License.
+ *
+ */
+
+// This imports the Java class "DecimalFormat"
+import java.text.DecimalFormat
+ 
+definition(
+    name: "Influxdb shipper",
+    namespace: "Prune",
+    author: "Prune",
+    description: "Send the metrics of a sensor into Influxdb.",
+    category: "Green Living",
+    iconUrl: "http://i.imgur.com/HU0ANBp.png",
+    iconX2Url: "http://i.imgur.com/HU0ANBp.png",
+    iconX3Url: "http://i.imgur.com/HU0ANBp.png",
+    oauth: true)
+
+
+preferences {
+    section("Select a sensor") {
+        input "temp", "capability.temperatureMeasurement", title: "Temperature", required: true
+        input "humidity", "capability.relativeHumidityMeasurement", title: "Humidity", required: true
+    }
+    section("Configure your Influxdb Server") {
+        input "remote_url", "text", title: "InfluxDB URL like http://your-server.com:8086", required: true
+        input "DB", "text", title: "InfluxDB database name", required: true
+        input "login", "text", title: "Influxdb User Login", required: true
+        input "password", "password", title: "Influxdb user password", required: true
+        input "prefix", "text", title: "Influxdb serie prefix", required: true
+    }
+}
+
+def installed() {
+    log.debug "Installed with settings: ${settings}"
+    initialize()
+}
+
+
+def updated() {
+    log.debug "Updated with settings: ${settings}"
+    unsubscribe()
+    initialize()
+}
+
+
+def initialize() {
+
+    /*
+      Check to see if the sensor is reporting temperature, then run the updateCurrentWeather
+      every 5 minutes
+    */
+    if (temp.currentTemperature) {
+        runEvery5Minutes(updateCurrentStats)
+    }
+}
+
+
+/*
+  Push data to Influx
+*/
+def updateCurrentStats() {
+
+    // Logs of the current data from the sensor
+    log.trace "URL: " + remote_url
+    log.trace "Temp: " + temp.currentTemperature
+    log.trace "Humidity: " + humidity.currentHumidity
+    log.trace "Dew Point: " + calculateDewPoint(temp.currentTemperature, humidity.currentHumidity)
+
+    // Builds the URL that will be sent to Influxdb
+    // 'http://localhost:8086/write?db=mydb' --data-binary 'cpu_load_short,host=server01,region=us-west value=0.64 1434055562000000000'
+    def dewpoint = calculateDewPoint(temp.currentTemperature, humidity.currentHumidity)
+    def params = [
+        uri: remote_url,
+        path: "/write",
+        query: [],
+        body: "temp,sensor=multisensor value="+temp.currentTemperature+" \nhumidity,sensor=multisensor value="+humidity.currentHumidity+" \ndewpoint,sensor=multisensor value="+dewpoint
+        ]
+      /*  
+              uri: remote_url,
+        path: "/write",
+        query: ["db="+ DB],
+        body: "temp,sensor=multisensor value="+temp.currentTemperature
+        
+        [
+            "ID": weatherID,
+            "PASSWORD": password,
+            "dateutc": "now",
+            "tempf": temp.currentTemperature,
+            "humidity": humidity.currentHumidity,
+            "dewptf": calculateDewPoint(temp.currentTemperature, humidity.currentHumidity),
+            "action": "updateraw",
+            "softwaretype": "SmartThings"
+        ] */
+    
+    
+    try {
+        // Make the HTTP request using httpGet()
+        log.error "Calling $params"
+        httpPost(params) { resp -> // This is how we define the "return data". Can also use $it.
+            log.debug "response data: ${resp.data}"
+        }
+    } catch (e) {
+        log.error "something went wrong: $e"
+    }
+
+/*
+	def url = remote_url
+    def putParams = [
+        uri: url,
+        body: ["temp,sensor=multisensor value="+temp.currentTemperature]
+    ]
+    log.debug "sending data:" + remote_url
+    httpPut(putParams) { 
+        response -> 
+        if (response.status != 200 ) {
+            log.debug "failed, status = ${response.status}"
+        }
+    }
+    */
+}
+
+// Calculates dewpoint based on temperature and humidity
+def calculateDewPoint(t, rh) {
+    def dp = 243.04 * ( Math.log(rh / 100) + ( (17.625 * t) / (243.04 + t) ) ) / (17.625 - Math.log(rh / 100) - ( (17.625 * t) / (243.04 + t) ) ) 
+    // Format the response for Weather Underground
+    return new DecimalFormat("##.##").format(dp)
+}
