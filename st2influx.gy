@@ -50,6 +50,7 @@ preferences {
         input "presence", "capability.presenceSensor", title: "Presence", required: false, multiple: true
         input "switches", "capability.switch", title: "Switches", required: false, multiple: true
         input "energy", "capability.energyMeter", title: "Energy", required: false, multiple: true
+        input "power", "capability.powerMeter", title: "Power", required: false, multiple: true
         input "smoke", "capability.smokeDetector", title: "Smoke", required: false, multiple: true
     }
 
@@ -135,6 +136,10 @@ def updateCurrentStats() {
     energy.eachWithIndex{ val, idx -> 
     	def sensorName = val.displayName.replaceAll(" ",'\\\\ ')
         full_body += "energy,sensor=${sensorName} value=${val.currentState("energy").value} \n"
+        } 
+    power.eachWithIndex{ val, idx -> 
+    	def sensorName = val.displayName.replaceAll(" ",'\\\\ ')
+        full_body += "power,sensor=${sensorName} value=${val.currentState("power").value} \n"
         } 
     smoke.eachWithIndex{ val, idx -> 
     	def sensorName = val.displayName.replaceAll(" ",'\\\\ ')
