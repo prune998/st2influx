@@ -36,13 +36,14 @@
           "id": 1,
           "isNew": true,
           "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true,
+            "alignAsTable": true
           },
           "lines": true,
           "linewidth": 2,
@@ -58,6 +59,7 @@
           "steppedLine": false,
           "targets": [
             {
+              "alias": "$m $tag_sensor",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -97,8 +99,7 @@
                   }
                 ]
               ],
-              "tags": [],
-              "alias": "$m $tag_sensor"
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -138,13 +139,14 @@
           "id": 2,
           "isNew": true,
           "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true,
+            "alignAsTable": true
           },
           "lines": true,
           "linewidth": 2,
@@ -160,6 +162,7 @@
           "steppedLine": false,
           "targets": [
             {
+              "alias": "$m $tag_sensor",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -199,8 +202,7 @@
                   }
                 ]
               ],
-              "tags": [],
-              "alias": "$m $tag_sensor"
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -240,13 +242,14 @@
           "id": 6,
           "isNew": true,
           "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
+            "avg": true,
+            "current": true,
+            "max": true,
+            "min": true,
             "show": true,
             "total": false,
-            "values": false
+            "values": true,
+            "alignAsTable": true
           },
           "lines": true,
           "linewidth": 2,
@@ -267,6 +270,7 @@
           "steppedLine": true,
           "targets": [
             {
+              "alias": "$m $tag_sensor",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -307,8 +311,7 @@
                   }
                 ]
               ],
-              "tags": [],
-              "alias": "$m $tag_sensor"
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -370,6 +373,7 @@
           "steppedLine": true,
           "targets": [
             {
+              "alias": "$m $tag_sensor",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -410,10 +414,10 @@
                   }
                 ]
               ],
-              "tags": [],
-              "alias": "$m $tag_sensor"
+              "tags": []
             },
             {
+              "alias": "$m $tag_sensor",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -454,8 +458,7 @@
                   }
                 ]
               ],
-              "tags": [],
-              "alias": "$m $tag_sensor"
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -496,12 +499,13 @@
           "isNew": true,
           "legend": {
             "avg": false,
-            "current": false,
+            "current": true,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": false
+            "values": true,
+            "alignAsTable": true
           },
           "lines": true,
           "linewidth": 2,
@@ -522,6 +526,7 @@
           "steppedLine": true,
           "targets": [
             {
+              "alias": "$m $tag_sensor",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -562,8 +567,7 @@
                   }
                 ]
               ],
-              "tags": [],
-              "alias": "$m $tag_sensor"
+              "tags": []
             }
           ],
           "timeFrom": null,
@@ -622,6 +626,6 @@
     "list": []
   },
   "schemaVersion": 8,
-  "version": 11,
+  "version": 12,
   "links": []
 }
