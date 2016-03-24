@@ -1,7 +1,7 @@
 # st2influx
 a SmartThings Groovy SmartApp that ship metrics from sensors to an influxdb endpoint
 
-![alt tag](https://github.com/prune998/st2influx/images/smartthings-dashboard.png)
+![alt tag](https://raw.githubusercontent.com/prune998/st2influx/master/images/smartthings-dashboard.png)
 
 Install :
 
